@@ -1,5 +1,5 @@
-name: Test Api
-run-name: Running the test to verify the api is working as expected
+name: Build-Push-Test Api
+run-name: Buil and push the image to Docker Hub and Running the test to verify the api is working as expected
 
 on: [workflow_dispatch]
 
@@ -7,8 +7,10 @@ env:
     IMAGE_NAME: ${{secrets.DOCKERHUB_USERNAME}}/${{ github.event.repository.name }}
 
 jobs:
-    build-and-login:
+    build-and-push:
         runs-on: ubuntu-latest
+        outputs:
+            image_tag: ${{ steps.tagname.outputs.tags }}
         steps:
             - name: Checkout
               uses: actions/checkout@v4
@@ -19,9 +21,36 @@ jobs:
                 password: ${{secrets.DOCKERHUB_TOKEN}}
             - name: Build the image and push
               uses: docker/build-push-action@v6
+              id: tagname
               with:
                 context: .
                 file: ./Dockerfile
                 push: true
                 tags: ${{ env.IMAGE_NAME }}:${{ github.sha }}
+    test-api:
+        needs: build-and-push
+        runs-on: ubuntu-latest
+        services:
+            app:
+                image: ${{ env.IMAGE_NAME }}:${{ github.sha }}
+                ports:
+                    - 3001:3000
+                env:
+                    MONGO_HOSTNAME: mongo
+            mongo:
+                image: mongo
+                ports:
+                    - 27017:27017
+        steps:
+            - name: Dump Services Context
+              run: echo "${{toJson(jobs.services)}}"
+            - name: POST a user
+              run: 'curl -X POST \
+                    http://localhost:3000/api/user \
+                    -H ''Content-Type: application/json'' \
+                    -d ''{"username": "hello","address": "dwded"
+                    }'''
+            - name: Get USERS
+              run: curl http://localhost:3000/api/user
+
 
