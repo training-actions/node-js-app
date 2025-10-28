@@ -1,0 +1,27 @@
+name: Test Api
+run-name: Running the test to verify the api is working as expected
+
+on: [workflow_dispatch]
+
+env:
+    IMAGE_NAME: ${{secrets.DOCKERHUB_USERNAME}}/${{ github.event.repository.name }}
+
+jobs:
+    build-and-login:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+            - name: Login to Docker Hub
+              uses: docker/login-action@v3
+              with:
+                username: ${{secrets.DOCKERHUB_USERNAME}}
+                password: ${{secrets.DOCKERHUB_TOKEN}}
+            - name: Build the image and push
+              uses: docker/build-push-action@v6
+              with:
+                context: .
+                file: ./Dockerfile
+                push: true
+                tags: ${{ env.IMAGE_NAME }}:${{ github.sha }}
+
