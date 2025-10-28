@@ -1,7 +1,11 @@
 name: Test Api
 run-name: Running the test to verify the api is working as expected
 
-on: [workflow_dispatch]
+on: 
+    workflow_run:
+        workflows: [Build & Publish Docker Image]
+        types:
+            - completed
 
 env:
     IMAGE_NAME: ${{secrets.DOCKERHUB_USERNAME}}/${{ github.event.repository.name }}
