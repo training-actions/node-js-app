@@ -42,8 +42,6 @@ jobs:
                 ports:
                     - 27017:27017
         steps:
-            - name: Install curl
-              run: sudo apt-get update && apt-get install -y curl
             - name: POST a user
               run: 'curl -X POST \
                     http://localhost:3000/api/user \
