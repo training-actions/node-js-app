@@ -2,30 +2,46 @@ name: Build & Publish Docker Image
 on:
     release:
         types: [published]
+permissions:
+    packages: write
+    contents: read
+
 env:
     IMAGE_NAME: ${{secrets.DOCKERHUB_USERNAME}}/${{ github.event.repository.name }}
 
 jobs:
-    build-and-push:
+    build-and-push-to-docker-and-github-repository:
         runs-on: ubuntu-latest
         outputs:
             image_name: ${{ env.IMAGE_NAME }}
         steps:
             - name: Checkout
               uses: actions/checkout@v4
+
             - name: Login to Docker Hub
               uses: docker/login-action@v3
               with:
                 username: ${{secrets.DOCKERHUB_USERNAME}}
                 password: ${{secrets.DOCKERHUB_TOKEN}}
+
+            - name: Login to Github Central Repository
+              uses: docker/login-action@v3
+              with:
+                registry: ghcr.io
+                username: ${{github.actor}}
+                passwork: ${{secrets.GITHUB_TOKEN}}
+
             - name: Extract MetaData
               id: metadata
               uses: docker/metadata-action@v4
               with:
-                images: ${{env.IMAGE_NAME}}
+                images: |
+                    ${{env.IMAGE_NAME}}
+                    ghcr.io/${{github.repository}}
                 tags: |
                     type=semver,pattern={{version}}
                     type=semver,pattern={{major}}.{{minor}}
+
             - name: Build the image and push
               uses: docker/build-push-action@v6
               with:
