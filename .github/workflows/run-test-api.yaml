@@ -30,6 +30,7 @@ jobs:
     test-api:
         needs: build-and-push
         runs-on: ubuntu-latest
+        container: node-js
         services:
             app:
                 image: ${{ env.IMAGE_NAME }}:${{ github.sha }}
@@ -44,6 +45,8 @@ jobs:
         steps:
             - name: Dump Services Context
               run: echo "${{toJson(jobs.services)}}"
+            - name: Install curl
+              run: apt-get update && apt-get install -y curl
             - name: POST a user
               run: 'curl -X POST \
                     http://localhost:3000/api/user \
