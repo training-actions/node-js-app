@@ -34,14 +34,14 @@ jobs:
         services:
             app:
                 image: cla0207/node-js-app:latest
-                ports:
-                    - 3001:3000
+                # ports:
+                #     - 3001:3000
                 env:
                     MONGO_HOSTNAME: mongo
             mongo:
                 image: mongo
-                ports:
-                    - 27017:27017
+                # ports:
+                #     - 27017:27017
         steps:
             - name: Get Information about services
               run: echo "${{toJson(job.services)}}"
@@ -50,6 +50,6 @@ jobs:
                   apt update -y
                   apt install curl -y
             - name: Get Users
-              run: curl http://localhost:3001/api/user
+              run: curl http://app:3000/api/user
 
 
