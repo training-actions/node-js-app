@@ -32,7 +32,7 @@ jobs:
         runs-on: ubuntu-latest
         services:
             app:
-                image: ${{ needs.build-and-push.outputs.image_name }}:latest
+                image: cla0207/node-js-app:latest
                 ports:
                     - 3001:3000
                 env:
