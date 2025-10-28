@@ -30,6 +30,7 @@ jobs:
     test-api:
         needs: build-and-push
         runs-on: ubuntu-latest
+        container: ubuntu:20.04
         services:
             app:
                 image: cla0207/node-js-app:latest
@@ -42,6 +43,8 @@ jobs:
                 ports:
                     - 27017:27017
         steps:
+            - name: Get Information about services
+              run: echo "${{toJson(jobs.services)}}"
             - name: POST a user
               run: 'curl -X POST http://localhost:3001/api/user -H ''Content-Type: application/json'' -d ''{"username": "hello","address": "dwded"}'''
             - name: Get USERS
