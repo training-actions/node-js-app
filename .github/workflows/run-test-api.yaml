@@ -10,7 +10,7 @@ jobs:
     build-and-push:
         runs-on: ubuntu-latest
         outputs:
-            image_tag: ${{ steps.tagname.outputs.tags }}
+            image_name: ${{ env.IMAGE_NAME }}
         steps:
             - name: Checkout
               uses: actions/checkout@v4
@@ -33,7 +33,7 @@ jobs:
         container: node-js
         services:
             app:
-                image: ${{ env.IMAGE_NAME }}:${{ github.sha }}
+                image: ${{ needs.build-and-push.outputs.image_name }}:${{ github.sha }}
                 ports:
                     - 3001:3000
                 env:
@@ -43,8 +43,6 @@ jobs:
                 ports:
                     - 27017:27017
         steps:
-            - name: Dump Services Context
-              run: echo "${{toJson(jobs.services)}}"
             - name: Install curl
               run: apt-get update && apt-get install -y curl
             - name: POST a user
