@@ -26,14 +26,13 @@ jobs:
                 context: .
                 file: ./Dockerfile
                 push: true
-                tags: ${{ env.IMAGE_NAME }}:${{ github.sha }}
+                tags: ${{ env.IMAGE_NAME }}:latest
     test-api:
         needs: build-and-push
         runs-on: ubuntu-latest
-        container: node-js
         services:
             app:
-                image: ${{ needs.build-and-push.outputs.image_name }}:${{ github.sha }}
+                image: ${{ needs.build-and-push.outputs.image_name }}:latest
                 ports:
                     - 3001:3000
                 env:
