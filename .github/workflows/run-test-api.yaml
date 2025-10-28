@@ -1,5 +1,5 @@
-name: Build-Push-Test Api
-run-name: Buil and push the image to Docker Hub and Running the test to verify the api is working as expected
+name: Test Api
+run-name: Running the test to verify the api is working as expected
 
 on: [workflow_dispatch]
 
@@ -7,28 +7,7 @@ env:
     IMAGE_NAME: ${{secrets.DOCKERHUB_USERNAME}}/${{ github.event.repository.name }}
 
 jobs:
-    build-and-push:
-        runs-on: ubuntu-latest
-        outputs:
-            image_name: ${{ env.IMAGE_NAME }}
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-            - name: Login to Docker Hub
-              uses: docker/login-action@v3
-              with:
-                username: ${{secrets.DOCKERHUB_USERNAME}}
-                password: ${{secrets.DOCKERHUB_TOKEN}}
-            - name: Build the image and push
-              uses: docker/build-push-action@v6
-              id: tagname
-              with:
-                context: .
-                file: ./Dockerfile
-                push: true
-                tags: ${{ env.IMAGE_NAME }}:latest
     test-api:
-        needs: build-and-push
         runs-on: ubuntu-latest
         container: ubuntu:20.04
         services:
