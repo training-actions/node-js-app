@@ -1,14 +1,14 @@
 const Users = require("../models/userModel");
 const bodyParser = require("body-parser");
 
-This is how to curl the post request
-curl -X POST \
-  http://localhost:3000/api/user \
-  -H 'Content-Type: application/json' \
-  -d '{
-	"username": "hello",
-	"address": "dwded"
-}'
+// This is how to curl the post request
+// curl -X POST \
+//   http://localhost:3000/api/user \
+//   -H 'Content-Type: application/json' \
+//   -d '{
+// 	"username": "hello",
+// 	"address": "dwded"
+// }'
 
 module.exports = (app) => {
   app.use(bodyParser.json());
