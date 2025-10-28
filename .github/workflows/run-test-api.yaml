@@ -47,8 +47,8 @@ jobs:
               run: echo "${{toJson(job.services)}}"
             - name: Install curl
               run: |
-               sudo apt update -y
-               sudo apt install curl -y
+                  apt update -y
+                  apt install curl -y
             - name: Get Users
               run: curl http://localhost:3001/api/user
 
