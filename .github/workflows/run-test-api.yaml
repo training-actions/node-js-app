@@ -45,9 +45,5 @@ jobs:
         steps:
             - name: Get Information about services
               run: echo "${{toJson(job.services)}}"
-            - name: POST a user
-              run: 'curl -X POST http://localhost:3001/api/user -H ''Content-Type: application/json'' -d ''{"username": "hello","address": "dwded"}'''
-            - name: Get USERS
-              run: curl http://localhost:3000/api/user
 
 
